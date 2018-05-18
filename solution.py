@@ -5,38 +5,60 @@ class Solution(object):
         :type p: str
         :rtype: bool
         """
-        s = input('please input the data of S \n')
-        p = input('please input the data of P \n')
         s_ptr = 0
         p_ptr = 0
-        data_ptr = 0
-        data = []
-        pos = []
-        for a in range(len(p)):
-            if p[a] == '*':
-                pos.append(a)
-            else:
-                pass
-        if bool(pos) == False:
-            while s_ptr < len(s):
-                if s[s_ptr] == p[p_ptr] or p[p_ptr] == '?':
+        p_ptr_copy = 0
+        while True:
+            if s[s_ptr] != p[p_ptr]:
+                if p[p_ptr] == '?':
                     s_ptr += 1
                     p_ptr += 1
+                elif p[p_ptr] == '*':
+                    p_ptr_copy = p_ptr + 1
+                    while True:
+                        if s_ptr == len(s) or p_ptr == len(p) or p_ptr_copy == len(p):
+                            break
+                        if p[p_ptr_copy] != s[s_ptr]:
+                            if p[p_ptr_copy] == '?':
+                                p_ptr_copy += 1
+                                s_ptr += 1
+                            elif p[p_ptr_copy] == '*':
+                                p_ptr = p_ptr_copy
+                                p_ptr_copy += 1
+                            else:
+                                s_ptr += 1                        
+                        else:
+                            while True:
+                                p_ptr_copy += 1
+                                s_ptr += 1
+                                if s_ptr == len(s) or p_ptr == len(p) or p_ptr_copy == len(p):
+                                    break
+                                if p[p_ptr_copy] != s[s_ptr]:
+                                    if p[p_ptr_copy] == '?':
+                                        pass
+                                    elif p[p_ptr_copy] == '*':
+                                        p_ptr = p_ptr_copy
+                                        p_ptr_copy += 1
+                                        break
+                                    else:
+                                        p_ptr_copy = p_ptr + 1
+                                        break                                
                 else:
                     return False
-            return True
-        else:
-            data.append(p[0:pos[0]])
-            for a in range(len(pos) - 1):
-                data.append(p[(pos[a] + 1):pos[a + 1]])
-            data.append(p[(a + 1):len(p)])
-            while s_ptr < len(s):
-                if data[data_ptr] == "":
-                    data_ptr += 1
-                if s[s_ptr:(s_ptr + len(data[data_ptr]))] != data[data_ptr]:
-                    s_ptr += 1               
-                else:
-                    s_ptr += len(data[data_ptr])
-                    data_ptr += 1
-                if data[data_ptr] == "":
-                    return True
+            else:
+                s_ptr += 1
+                p_ptr += 1
+            if s_ptr == len(s) and p_ptr == len(p):
+                return True
+            elif s_ptr == len(s) and p_ptr != len(p):
+                return False
+            elif p_ptr == len(p) and s_ptr != len(s):
+                return False
+
+if __name__ == '__main__':
+    start = Solution()
+    while True:
+        data_s = input('please input the data of S: \n')
+        data_p = input('please input the data of P: \n')
+        so_ = start.isMatch(data_s, data_p)
+        print(so_)
